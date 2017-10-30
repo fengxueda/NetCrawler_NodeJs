@@ -14,7 +14,7 @@ http.get(url,function (res) {
     res.on('end',function () {
         console.log('成功获取');
 
-        fs.writeFile('data.txt',data,function (err) {
+        fs.writeFile('data.html',data,function (err) {
             if(err){
                 console.log('写入错误');
                 return;
