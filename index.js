@@ -1,26 +1,16 @@
-// index.js is the entry of the project. 
-const http = require('http');
+//request获取网页
+const request = require('request');
 const fs = require('fs');
 
+let url = 'https://www.zhihu.com';
 
-//获取http网站数据
-var url = '';
-http.get(url,function (res) {
-    var data = '';
-    res.on('data',function (chunk) {
-        data += chunk;
+let opt = {url:url};
+let callback = function (err,res,body) {
+    if(err) throw err;
+    fs.writeFile('body.html',body,(err)=>{
+        if(err) throw err;
+        console.log('写入成功');
     });
+};
 
-    res.on('end',function () {
-        console.log('成功获取');
-
-        fs.writeFile('data.html',data,function (err) {
-            if(err){
-                console.log('写入错误');
-                return;
-            }
-
-            console.log('成功写入data.txt')
-        });
-    });
-});
+request(opt,callback);
