@@ -1,32 +1,16 @@
-// index.js is the entry of the project. 
-const http = require('http');
+//request获取网页
+const request = require('request');
 const fs = require('fs');
-const https = require('https');//使用request可能会更简单点
 
-var url = 'http://www.imooc.com/video/15316';
-getUrlData(url);
+let url = 'https://www.zhihu.com';
 
-function getUrlData(url) {
-    var h = http;
-    if(/^https/.test(url)){
-        h = https;
-    }
-
-    h.get(url,function (res) {
-        var data = '';
-        res.on('data',function (chunk) {
-            data += chunk;
-        });
-
-        res.on('end',function () {
-            console.log('成功获取');
-            fs.writeFile('data.html',data,function (err) {
-                if(err){
-                    console.log('写入错误');
-                    return;
-                }
-                console.log('成功写入data.txt');
-            }
-        });
+let opt = {url:url};
+let callback = function (err,res,body) {
+    if(err) throw err;
+    fs.writeFile('body.html',body,(err)=>{
+        if(err) throw err;
+        console.log('写入成功');
     });
-}
+};
+
+request(opt,callback);
