@@ -1,32 +1,22 @@
 // index.js is the entry of the project. 
-const http = require('http');
-const fs = require('fs');
-const https = require('https');//使用request可能会更简单点
 
-var url = 'http://www.imooc.com/video/15316';
-getUrlData(url);
+var HttpClient = require('./apps/http_client');
 
-function getUrlData(url) {
-    var h = http;
-    if(/^https/.test(url)){
-        h = https;
-    }
+// var option = {
+//     hostname: '183.2.205.180',
+//     path: '/6571F9406D33671E7AFFE4E58/03000A010059F7EA614FC711EF7458F62994FD-5A73-DAD7-7E38-79BB36B8901A.mp4',
+//     headers: {
+//         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+//         'Accept-Encoding': 'gzip, deflate, sdch, utf-8',
+//         'Accept-Language': 'zh-CN,zh;q=0.8',
+//         'Connection': 'keep-alive',
+//         'Host': '183.2.205.180',
+//         'Referer': 'localhost',
+//         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
+//     }
+// };
 
-    h.get(url,function (res) {
-        var data = '';
-        res.on('data',function (chunk) {
-            data += chunk;
-        });
+var option = 'http://www.cnblogs.com/fangsmile/p/6245298.html';
 
-        res.on('end',function () {
-            console.log('成功获取');
-            fs.writeFile('data.html',data,function (err) {
-                if(err){
-                    console.log('写入错误');
-                    return;
-                }
-                console.log('成功写入data.txt');
-            }
-        });
-    });
-}
+var client = new HttpClient(option);
+client.Get();
