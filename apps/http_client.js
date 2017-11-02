@@ -24,7 +24,11 @@ var http_client = {
     },
 
     getFilename: function (path) {
-        return (path.substring(path.lastIndexOf('/') + 1, path.end));
+        if (-1 == path.lastIndexOf('?')) {
+            return (path.substring(path.lastIndexOf('/') + 1, path.end));
+        } else {
+            return (path.substring(path.lastIndexOf('/')) + 1, path.lastIndexOf('?'));
+        }
     },
 
     getRequest: function (option) {
@@ -73,6 +77,7 @@ var http_client = {
     postRequest: function (option, body) {
         var protocol = (option.type == 'https:' ? https : http);
         req = protocol.request(option, function (res) {
+            res.setEncoding('utf8');
             console.log('STATUS:' + res.statusCode);
             console.log('HEADERS:' + JSON.stringify(res.headers));
 

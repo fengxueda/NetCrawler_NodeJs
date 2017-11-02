@@ -8,12 +8,14 @@ getArgs = {
 };
 
 var postData = {
+    a: 'tt',
 };
 
 var content = querystring.stringify(getArgs);
+var data  = querystring.stringify(postData);
 
-var url_src = 'http://183.2.205.180/6571F9406D33671E7AFFE4E58/03000A010059F7EA614FC711EF7458F62994FD-5A73-DAD7-7E38-79BB36B8901A.mp4';
-// var url_src = 'http://www.cnblogs.com/fangsmile/p/6245298.html';
+// var url_src = 'http://183.2.205.180/6571F9406D33671E7AFFE4E58/03000A010059F7EA614FC711EF7458F62994FD-5A73-DAD7-7E38-79BB36B8901A.mp4';
+var url_src = 'http://www.cnblogs.com/fangsmile/p/6245298.html';
 
 // GET option
 var get_option = {
@@ -31,13 +33,19 @@ var get_option = {
     }
 };
 
+// POST option
 var post_option = {
     type: url.parse(url_src).protocol,
     hostname: url.parse(url_src).hostname,
     port: !url.parse(url_src).port ? url.parse(url_src).port : 80,
+    path: url.parse(url_src).path,
+    headers:{
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Content-length': data.length,
+    }
 }
 
 client = new HttpClient(get_option);
 client.Get();
-// client = new HttpClient(post_option, querystring.stringify(postData));
+// client = new HttpClient(post_option, data);
 // client.Post();
