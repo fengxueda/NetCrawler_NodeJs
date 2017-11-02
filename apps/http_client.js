@@ -5,38 +5,49 @@ const https = require('https');
 
 module.exports = HttpClient;
 
-function HttpClient(option) {
+function HttpClient(option, body) {
     this.option = option;
     this.Get = function () {
+        this.option.headers.method = 'GET';
         http_client.getRequest(this.option);
     }
     this.Post = function () {
+        this.option.headers.method = 'POST';
+        http_client.postRequest(this.option, this.body);
     }
 }
 
 var http_client = {
+
+    perHandler: function (message) {
+        return;
+    },
 
     getFilename: function (path) {
         return (path.substring(path.lastIndexOf('/') + 1, path.end));
     },
 
     getRequest: function (option) {
-        var h = http;
-        if (/^https/.test(option)) {
-            h = https;
-        }
 
-        h.get(option, function (res) {
+        var protocol = (option.type == 'https:' ? https : http);
+        req = protocol.request(option, function (res) {
+            console.log('STATUS:' + res.statusCode);
+            console.log('HEADERS:' + JSON.stringify(res.headers));
+
             var data = '';
-            res.on('data', function (chunk) {
-                data += chunk;
-                console.log('loading...');
+            res.on('error', function (err) {
+                console.log('Error message : ' + err);
             });
 
-            res.on('end', function () {
-                //FXIME : 收到4xx或者5xx之类的错误码，此时表示请求失败
-                //...
+            res.on('data', function (chunk) {
+                data += chunk;
+            });
 
+            if (res.statusCode > 300) {
+                return;
+            }
+
+            res.on('end', function () {
                 console.log('成功获取');
                 try {
                     var filename = http_client.getFilename(option.path);
@@ -49,12 +60,43 @@ var http_client = {
 
                 fs.writeFile(filename, data, function (err) {
                     if (err) {
-                        console.log('写入错误');
+                        console.log('写入错误 : ' + err);
                         return;
                     }
                     console.log('成功写入' + filename);
                 });
             });
         });
+        req.end();
+    },
+
+    postRequest: function (option, body) {
+        var protocol = (option.type == 'https:' ? https : http);
+        req = protocol.request(option, function (res) {
+            console.log('STATUS:' + res.statusCode);
+            console.log('HEADERS:' + JSON.stringify(res.headers));
+
+            var data = '';
+            res.on('error', function (err) {
+                console.log('Error message : ' + err);
+            });
+
+            res.on('data', function (chunk) {
+                data += chunk;
+            });
+
+            if (res.statusCode > 300) {
+                return;
+            }
+
+            res.on('end', function () {
+                console.log('Post成功');
+            });
+        });
+
+        if (body != null) {
+            req.write(body);
+        }
+        req.end();
     },
 }
